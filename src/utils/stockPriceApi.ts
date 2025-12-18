@@ -74,16 +74,40 @@ class StockPriceService {
     }
   }
 
-  async updateStockPrices(stockCodes: string[]): Promise<StockPrice[]> {
-    const promises = stockCodes.map((code) => this.getStockPrice(code));
-    const results = await Promise.allSettled(promises);
+//   async updateStockPrices(stockCodes: string[]): Promise<StockPrice[]> {
+//     const promises = stockCodes.map((code) => this.getStockPrice(code));
+//     const results = await Promise.allSettled(promises);
 
-    return results
-      .filter(
-        (result): result is PromiseFulfilledResult<StockPrice> =>
-          result.status === "fulfilled"
-      )
-      .map((result) => result.value);
+//     return results
+//       .filter(
+//         (result): result is PromiseFulfilledResult<StockPrice> =>
+//           result.status === "fulfilled"
+//       )
+//       .map((result) => result.value);
+//   }
+
+  async updateStockPrices(stockCodes: string[]): Promise<StockPrice[]> {
+    console.log(
+      `Updating prices for ${stockCodes.length} stocks with 1.5s intervals...`
+    );
+
+    const results: StockPrice[] = [];
+
+    // 顺序请求，确保间隔
+    for (const code of stockCodes) {
+      try {
+        const stockPrice = await this.getStockPrice(code);
+        results.push(stockPrice);
+        console.log(`Updated ${code}: $${stockPrice.price}`);
+      } catch (error) {
+        console.error(`Failed to update ${code}:`, error);
+        // 添加 fallback 数据
+        results.push({} as StockPrice);
+      }
+    }
+
+    console.log(`Completed updating ${results.length} stocks`);
+    return results;
   }
 }
 
