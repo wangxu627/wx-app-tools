@@ -1,15 +1,40 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 
-// https://vite.dev/config/
-export default defineConfig({
-  plugins: [react()],
-  css: {
-    preprocessorOptions: {
-      less: {
-        // enable inline JavaScript in Less if needed by some libraries
-        javascriptEnabled: true,
+export default defineConfig(({ mode }) => {
+  // 读取构建配置
+  const buildConfig = (() => {
+    try {
+      const config = require('./build.config.json')
+      return config[process.env.BUILD_ENV || 'development'] || config.development
+    } catch {
+      return { baseUrl: '/' }
+    }
+  })()
+
+  return {
+    plugins: [react()],
+    base: buildConfig.baseUrl,
+    css: {
+      preprocessorOptions: {
+        less: {
+          javascriptEnabled: true,
+        },
       },
     },
-  },
+    build: {
+      outDir: 'dist',
+      sourcemap: mode === 'development',
+      minify: mode === 'production' ? 'esbuild' : false,
+      rollupOptions: {
+        output: {
+          manualChunks: {
+            vendor: ['react', 'react-dom'],
+            mantine: ['@mantine/core', '@mantine/hooks'],
+            router: ['react-router-dom']
+          }
+        }
+      }
+    }
+  }
 })

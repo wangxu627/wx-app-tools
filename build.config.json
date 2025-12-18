@@ -1,0 +1,20 @@
+{
+  "development": {
+    "nginxPath": "/var/www/wx-app-tools-dev",
+    "baseUrl": "/dev/wx-app-tools/",
+    "nginxConfigPath": "/etc/nginx/sites-available/wx-app-tools-dev",
+    "nginxReload": true
+  },
+  "staging": {
+    "nginxPath": "/var/www/wx-app-tools-staging",
+    "baseUrl": "/staging/wx-app-tools/",
+    "nginxConfigPath": "/etc/nginx/sites-available/wx-app-tools-staging",
+    "nginxReload": true
+  },
+  "production": {
+    "nginxPath": "/var/www/wx-app-tools",
+    "baseUrl": "/wx-app-tools/",
+    "nginxConfigPath": "/etc/nginx/sites-available/wx-app-tools",
+    "nginxReload": true
+  }
+}

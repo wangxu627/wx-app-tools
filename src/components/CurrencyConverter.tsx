@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { Title, Text, Loader, Alert } from '@mantine/core'
 
 interface CurrencyConverterProps {

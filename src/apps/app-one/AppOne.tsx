@@ -1,6 +1,5 @@
-import React, { useState } from 'react'
-import { Outlet, Link } from 'react-router-dom'
-import { Container, Title, Button, Group, Collapse, Paper } from '@mantine/core'
+import { useState } from 'react'
+import { Title, Button, Collapse, Paper } from '@mantine/core'
 import { IconChevronDown, IconChevronRight } from '@tabler/icons-react'
 import CurrencyConverter from '../../components/CurrencyConverter'
 import StockPortfolio from '../../components/StockPortfolio'

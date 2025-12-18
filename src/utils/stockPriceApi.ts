@@ -72,6 +72,14 @@ class StockPriceService {
         lastUpdate: new Date().toISOString(),
       };
     }
+    
+    return {
+        symbol,
+        price: Math.random() * 1000 + 50, // Random price between 50-1050
+        change: (Math.random() - 0.5) * 20, // Random change ±10
+        changePercent: (Math.random() - 0.5) * 5, // Random change ±2.5%
+        lastUpdate: new Date().toISOString(),
+      };
   }
 
 //   async updateStockPrices(stockCodes: string[]): Promise<StockPrice[]> {

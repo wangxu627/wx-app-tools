@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import { useState, useEffect } from 'react'
 import { AppShell, Tabs, Box } from '@mantine/core'
 import { IconCurrencyDollar, IconListCheck, IconInfoCircle } from '@tabler/icons-react'
 import { useNavigate, useLocation } from 'react-router-dom'

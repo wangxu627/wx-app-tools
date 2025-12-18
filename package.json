@@ -7,7 +7,13 @@
     "dev": "vite",
     "build": "tsc -b && vite build",
     "lint": "eslint .",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "build:dev": "node build.js -e development",
+    "build:staging": "node build.js -e staging", 
+    "build:prod": "node build.js -e production",
+    "deploy:dev": "node build.js -e development",
+    "deploy:staging": "node build.js -e staging",
+    "deploy:prod": "node build.js -e production"
   },
   "dependencies": {
     "@emotion/react": "^11.14.0",

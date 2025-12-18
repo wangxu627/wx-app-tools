@@ -1,4 +1,3 @@
-import React from 'react'
 import { useRouteError, isRouteErrorResponse, Link } from 'react-router-dom'
 import { Container, Title, Text, Button } from '@mantine/core'
 

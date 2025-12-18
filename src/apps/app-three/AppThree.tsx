@@ -1,4 +1,3 @@
-import React from 'react'
 import { Outlet, Link, useLoaderData } from 'react-router-dom'
 import { Container, Title, Button, Group, Text } from '@mantine/core'
 
