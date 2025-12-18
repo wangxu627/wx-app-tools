@@ -7,11 +7,8 @@ export interface StockPrice {
   lastUpdate: string
 }
 
-// https://www.alphavantage.co/query?function=GLOBAL_QUOTE&symbol=MSFT&apikey=GAKOQTF0L2T4EQKA
-
 
 class StockPriceService {
-//   private baseUrl = 'https://query1.finance.yahoo.com/v8/finance/chart'
     private baseUrl = 'https://www.alphavantage.co/query'
   
   async getStockPrice(symbol: string): Promise<StockPrice> {

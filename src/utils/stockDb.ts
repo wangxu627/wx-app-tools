@@ -112,21 +112,21 @@ class StockDatabase {
     })
   }
 
-  async initializeWithSampleData(): Promise<void> {
-    const existing = await this.getAllStocks()
-    if (existing.length === 0) {
-      // Initialize with sample data
-      await this.addStock({
-        stock_name: "特斯拉",
-        stock_code: "TSLA",
-        cost_price: 623.31,
-        current_price: 709.74,
-        shares: 2,
-        total_value: 1419.48,
-        profit_loss: 172.86
-      })
-    }
-  }
+//   async initializeWithSampleData(): Promise<void> {
+//     const existing = await this.getAllStocks()
+//     if (existing.length === 0) {
+//       // Initialize with sample data
+//       await this.addStock({
+//         stock_name: "特斯拉",
+//         stock_code: "TSLA",
+//         cost_price: 623.31,
+//         current_price: 709.74,
+//         shares: 2,
+//         total_value: 1419.48,
+//         profit_loss: 172.86
+//       })
+//     }
+//   }
 }
 
 export const stockDb = new StockDatabase()

@@ -1,8 +1,8 @@
 import React, { useState, useEffect, useCallback } from 'react'
 import { Outlet, Link } from 'react-router-dom'
-import { 
-  Container, Title, Button, Group, Text, Loader, Alert, Table, 
-  Modal, TextInput, NumberInput, ActionIcon, Notification, Badge
+import {
+    Container, Title, Button, Group, Text, Loader, Alert, Table,
+    Modal, TextInput, NumberInput, ActionIcon, Notification, Badge
 } from '@mantine/core'
 import { IconEdit, IconTrash, IconPlus, IconRefresh } from '@tabler/icons-react'
 import { stockDb, type StockData } from '../../utils/stockDb'
@@ -51,7 +51,7 @@ export function AppOneHome() {
     useEffect(() => {
         const initDB = async () => {
             try {
-                await stockDb.initializeWithSampleData()
+                // await stockDb.initializeWithSampleData()
                 await loadStocks()
             } catch (error) {
                 console.error('Failed to initialize database:', error)
@@ -75,12 +75,12 @@ export function AppOneHome() {
     // Update stock prices
     const updateStockPrices = useCallback(async () => {
         if (stockData.length === 0) return
-        
+
         setPriceUpdating(true)
         try {
             const stockCodes = stockData.map(stock => stock.stock_code)
             const priceUpdates = await stockPriceService.updateStockPrices(stockCodes)
-            
+
             // Update each stock with new price
             for (const priceUpdate of priceUpdates) {
                 const stock = stockData.find(s => s.stock_code === priceUpdate.symbol)
@@ -93,7 +93,7 @@ export function AppOneHome() {
                     await stockDb.updateStock(stock.id!, updatedData)
                 }
             }
-            
+
             // Reload stocks to reflect changes
             await loadStocks()
             setLastPriceUpdate(new Date())
@@ -141,7 +141,7 @@ export function AppOneHome() {
 
     const handleDeleteStock = async (id: number) => {
         if (!confirm('确定要删除这只股票吗？')) return
-        
+
         try {
             await stockDb.deleteStock(id)
             await loadStocks()
@@ -232,8 +232,8 @@ export function AppOneHome() {
     return (
         <div style={{ marginTop: 20 }}>
             {notification && (
-                <Notification 
-                    color="green" 
+                <Notification
+                    color="green"
                     onClose={() => setNotification(null)}
                     style={{ marginBottom: 16 }}
                 >
@@ -282,8 +282,8 @@ export function AppOneHome() {
                         )}
                     </div>
                     <Group>
-                        <Button 
-                            leftSection={<IconRefresh size={16} />} 
+                        <Button
+                            leftSection={<IconRefresh size={16} />}
                             onClick={updateStockPrices}
                             loading={priceUpdating}
                             size="sm"
@@ -352,15 +352,15 @@ export function AppOneHome() {
                                     </Table.Td>
                                     <Table.Td>
                                         <Group gap="xs">
-                                            <ActionIcon 
-                                                size="sm" 
+                                            <ActionIcon
+                                                size="sm"
                                                 color="blue"
                                                 onClick={() => handleEditStock(stock)}
                                             >
                                                 <IconEdit size={14} />
                                             </ActionIcon>
-                                            <ActionIcon 
-                                                size="sm" 
+                                            <ActionIcon
+                                                size="sm"
                                                 color="red"
                                                 onClick={() => handleDeleteStock(stock.id!)}
                                             >
@@ -376,8 +376,8 @@ export function AppOneHome() {
             </div>
 
             {/* Add/Edit Stock Modal */}
-            <Modal 
-                opened={modalOpened} 
+            <Modal
+                opened={modalOpened}
                 onClose={() => setModalOpened(false)}
                 title={editingStock ? "编辑股票" : "添加股票"}
             >
