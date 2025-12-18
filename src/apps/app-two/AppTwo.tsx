@@ -4,12 +4,10 @@ import { Container, Title, Button, Group, Text, TextInput, Stack } from '@mantin
 
 export default function AppTwoLayout() {
   return (
-    <Container style={{ paddingTop: 40 }}>
-      <Title order={2}>App Two</Title>
-      <Text mb="sm">A tiny todo-like demo app embedded as a sub-app.</Text>
-      <Group>
-        <Button component={Link} to="">Todos</Button>
-        <Button component={Link} to="/">Back to Hub</Button>
+    <Container style={{ paddingTop: 20 }}>
+      <Title order={2}>Todo List</Title>
+      <Group mb="md">
+        <Button component={Link} to="/" size="sm">← Back to Hub</Button>
       </Group>
       <Outlet />
     </Container>

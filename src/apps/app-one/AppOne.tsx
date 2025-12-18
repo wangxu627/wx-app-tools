@@ -1,14 +1,15 @@
 import React, { useState, useEffect, useCallback } from 'react'
 import { Outlet, Link } from 'react-router-dom'
-import { Container, Title, Button, Group, Text, NumberInput, Loader, Alert } from '@mantine/core'
+import { Container, Title, Button, Group, Text, Loader, Alert } from '@mantine/core'
+
+
 
 export default function AppOneLayout() {
   return (
-    <Container style={{ paddingTop: 40 }}>
-      <Title order={2}>App One</Title>
-      <Group>
-        <Button component={Link} to="">Home</Button>
-        <Button component={Link} to="/">Back to Hub</Button>
+    <Container style={{ paddingTop: 20 }}>
+      <Title order={2}>Currency Converter</Title>
+      <Group mb="md">
+        <Button component={Link} to="/" size="sm">← Back to Hub</Button>
       </Group>
       <Outlet />
     </Container>
@@ -17,14 +18,12 @@ export default function AppOneLayout() {
 
 
 export function AppOneHome() {
-  const USD_AMOUNTS = [100, 200, 300, 500, 700]
+  const USD_AMOUNTS = [100, 200, 300, 500, 700, 1000]
   const CNY_AMOUNTS = [1000, 2000, 3000, 5000, 7000, 10000]
 
   const [rate, setRate] = useState<number | null>(null)
-  const [lastUpdated, setLastUpdated] = useState<string | null>(null)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
-  const [source, setSource] = useState<string | null>(null)
 
   const loadRate = useCallback(async (signal?: AbortSignal) => {
     setLoading(true)
@@ -58,10 +57,11 @@ export function AppOneHome() {
       if (!rawRate || Number.isNaN(rawRate)) throw new Error('Invalid response format from rate API')
 
       setRate(rawRate)
-      setLastUpdated(json?.date ?? new Date().toISOString())
-      setSource(baseUrl)
     } catch (e: any) {
       // keep existing rate if present, but display the error
+      if (e.name === 'AbortError' || e.message?.includes('aborted')) {
+        return // 静默忽略取消错误
+      }
       setError(e?.message ?? String(e))
     } finally {
       setLoading(false)
@@ -71,7 +71,7 @@ export function AppOneHome() {
   useEffect(() => {
     const controller = new AbortController()
     loadRate(controller.signal)
-    const id = setInterval(() => loadRate(), 60 * 1000) // refresh every minute
+    const id = setInterval(() => loadRate(), 5 * 60 * 1000) // refresh every minute
     return () => {
       controller.abort()
       clearInterval(id)
@@ -83,19 +83,18 @@ export function AppOneHome() {
   return (
     <div style={{ marginTop: 20 }}>
       <Title order={4}>Currency Presets — USD ↔ CNY</Title>
-      <Text mt="sm" mb="sm">Auto-refreshes every minute; no manual input required.</Text>
+
+      {loading && <Loader size="sm" />}
+      {error && <Alert title="Error" color="red" mt="sm">{error}</Alert>}
+      {!loading && !error && <div style={{height: '16px'}}></div>}
 
       <div style={{ display: 'flex', gap: 16, alignItems: 'flex-start' }}>
+       
         <div style={{ flex: 1 }}>
           <Title order={5}>USD → CNY</Title>
-          {loading && <Loader size="sm" />}
-          {error && <Alert title="Error" color="red" mt="sm">{error}</Alert>}
-          {source && <Text size="xs" color="dimmed" mt="xs">Source: {source}</Text>}
-          {lastUpdated && <Text size="xs" color="dimmed" mt="xs">Last updated: {lastUpdated}</Text>}
-
           <div style={{ marginTop: 12 }}>
             {USD_AMOUNTS.map((usd) => (
-              <div key={usd} style={{ padding: '8px 12px', borderRadius: 6, background: '#0f1724', marginBottom: 8 }}>
+              <div key={usd} style={{ padding: '8px 12px', borderRadius: 6, marginBottom: 8 }}>
                 <Text><strong>${usd}</strong> → <strong>¥{rate ? fmt(usd * rate) : '—'}</strong></Text>
               </div>
             ))}
@@ -106,7 +105,7 @@ export function AppOneHome() {
           <Title order={5}>CNY → USD</Title>
           <div style={{ marginTop: 12 }}>
             {CNY_AMOUNTS.map((cny) => (
-              <div key={cny} style={{ padding: '8px 12px', borderRadius: 6, background: '#0f1724', marginBottom: 8 }}>
+              <div key={cny} style={{ padding: '8px 12px', borderRadius: 6, marginBottom: 8 }}>
                 <Text>¥{cny} → <strong>{rate ? `$${fmt(cny / rate)}` : '—'}</strong></Text>
               </div>
             ))}
@@ -117,11 +116,4 @@ export function AppOneHome() {
   )
 }
 
-export function AppOneSettings() {
-  return (
-    <div style={{ marginTop: 20 }}>
-      <Title order={4}>App One - Settings</Title>
-      <Text mt="sm">This page demonstrates nested routing inside the sub-app.</Text>
-    </div>
-  )
-}
+// export default AppOneLayout

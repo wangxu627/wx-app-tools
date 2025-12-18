@@ -1,33 +1,84 @@
-import React from 'react'
-import { Container, Title, Text, Stack, Button, Card } from '@mantine/core'
-import { Link } from 'react-router-dom'
+import React, { useState, useEffect } from 'react'
+import { AppShell, Tabs, Box } from '@mantine/core'
+import { IconCurrencyDollar, IconListCheck, IconInfoCircle } from '@tabler/icons-react'
+import { useNavigate, useLocation } from 'react-router-dom'
+import { AppOneHome } from '../apps/app-one/AppOne'
+import { AppTwoHome } from '../apps/app-two/AppTwo'
+import { AppThreeOverview } from '../apps/app-three/AppThree'
+
+const tabRoutes = {
+  'app-one': '/apps/app-one',
+  'app-two': '/apps/app-two',
+  'app-three': '/apps/app-three'
+}
+
+const routeTabs: Record<string, string> = {
+  '/apps/app-one': 'app-one',
+  '/apps/app-two': 'app-two', 
+  '/apps/app-three': 'app-three'
+}
 
 export default function MainPage() {
+  const navigate = useNavigate()
+  const location = useLocation()
+  const [activeTab, setActiveTab] = useState('app-one')
+
+  useEffect(() => {
+    // Sync tab with current route
+    const tabFromRoute = routeTabs[location.pathname]
+    if (tabFromRoute && tabFromRoute !== activeTab) {
+      setActiveTab(tabFromRoute)
+    }
+  }, [location.pathname, activeTab])
+
+  const handleTabChange = (value: string | null) => {
+    if (value && tabRoutes[value as keyof typeof tabRoutes]) {
+      setActiveTab(value)
+      navigate(tabRoutes[value as keyof typeof tabRoutes])
+    }
+  }
+
   return (
-    <Container style={{ paddingTop: 40 }}>
-      <Title order={2}>Main Page — App Hub</Title>
-      <Text mt="sm" mb="md">Select an app to open its dedicated web-app page.</Text>
+    <AppShell
+      navbar={{ width: 250, breakpoint: 'sm' }}
+      padding={0}
+      style={{ height: '100vh', width: '100vw' }}
+    >
+      <AppShell.Navbar>
+        <Tabs value={activeTab} onChange={handleTabChange} orientation="vertical" variant="pills" h="100%">
+          <Tabs.List p="md" h="100%">
+            <Tabs.Tab 
+              value="app-one" 
+              leftSection={<IconCurrencyDollar size={16} />}
+              style={{ justifyContent: 'flex-start', width: '100%' }}
+            >
+              Currency Converter
+            </Tabs.Tab>
+            <Tabs.Tab 
+              value="app-two" 
+              leftSection={<IconListCheck size={16} />}
+              style={{ justifyContent: 'flex-start', width: '100%' }}
+            >
+              Todo List
+            </Tabs.Tab>
+            <Tabs.Tab 
+              value="app-three" 
+              leftSection={<IconInfoCircle size={16} />}
+              style={{ justifyContent: 'flex-start', width: '100%' }}
+            >
+              Info App
+            </Tabs.Tab>
+          </Tabs.List>
+        </Tabs>
+      </AppShell.Navbar>
 
-      <Stack spacing="md" sx={{ maxWidth: 480 }}>
-        <Card shadow="sm">
-          <Title order={4}>App One</Title>
-          <Text size="sm" mt="xs">A small counter app with its own nested pages.</Text>
-          <Button component={Link} to="/apps/app-one" mt="sm">Open App One</Button>
-        </Card>
-
-        <Card shadow="sm">
-          <Title order={4}>App Two</Title>
-          <Text size="sm" mt="xs">A todo-style app (demo state inside this page).</Text>
-          <Button component={Link} to="/apps/app-two" mt="sm">Open App Two</Button>
-        </Card>
-
-        <Card shadow="sm">
-          <Title order={4}>App Three</Title>
-          <Text size="sm" mt="xs">A small info app that demonstrates independent UI.</Text>
-          <Button component={Link} to="/apps/app-three" mt="sm">Open App Three</Button>
-        </Card>
-
-      </Stack>
-    </Container>
+      <AppShell.Main style={{ height: '100vh', overflow: 'hidden' }}>
+        <Box p="md" h="100%" style={{ overflow: 'auto' }}>
+          {activeTab === 'app-one' && <AppOneHome />}
+          {activeTab === 'app-two' && <AppTwoHome />}
+          {activeTab === 'app-three' && <AppThreeOverview />}
+        </Box>
+      </AppShell.Main>
+    </AppShell>
   )
 }

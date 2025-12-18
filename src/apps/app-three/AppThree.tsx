@@ -4,12 +4,10 @@ import { Container, Title, Button, Group, Text } from '@mantine/core'
 
 export default function AppThreeLayout() {
   return (
-    <Container style={{ paddingTop: 40 }}>
-      <Title order={2}>App Three</Title>
-      <Text mb="sm">An information-style small app demonstrating independent UI and routes.</Text>
-      <Group>
-        <Button component={Link} to="">Overview</Button>
-        <Button component={Link} to="/">Back to Hub</Button>
+    <Container style={{ paddingTop: 20 }}>
+      <Title order={2}>Info App</Title>
+      <Group mb="md">
+        <Button component={Link} to="/" size="sm">← Back to Hub</Button>
       </Group>
       <Outlet />
     </Container>
