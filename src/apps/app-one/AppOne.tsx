@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Title, Button, Collapse, Paper } from '@mantine/core'
+import { Title, Button, Collapse, Paper, Container } from '@mantine/core'
 import { IconChevronDown, IconChevronRight } from '@tabler/icons-react'
 import CurrencyConverter from '../../components/CurrencyConverter'
 import StockPortfolio from '../../components/StockPortfolio'
@@ -19,7 +19,7 @@ export function AppOneHome() {
     const [currencyOpened, setCurrencyOpened] = useState(true)
 
     return (
-        <div style={{ marginTop: 20 }}>
+        <Container fluid p={{ base: 'xs', sm: 'md' }} style={{ marginTop: 20 }}>
             <Paper withBorder radius="md" mb="lg">
                 <Button
                     variant="subtle"
@@ -39,9 +39,9 @@ export function AppOneHome() {
                     </div>
                 </Collapse>
             </Paper>
-            <div style={{ marginTop: 32 }}>
+            <div style={{ marginTop: 32, overflowX: 'scroll' }}>
                 <StockPortfolio />
             </div>
-        </div>
+        </Container>
     )
 }
