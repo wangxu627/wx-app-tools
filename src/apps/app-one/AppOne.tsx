@@ -40,7 +40,7 @@ export function AppOneHome() {
                 </Collapse>
             </Paper>
 
-            <div style={{ marginTop: 32, overflowX: 'scroll' }}>
+            <div style={{ marginTop: 32, overflowX: 'auto' }}>
                 <StockPortfolio />
             </div>
         </Container>
