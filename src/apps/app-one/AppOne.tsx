@@ -16,7 +16,7 @@ export default function AppOneLayout() {
 }
 
 export function AppOneHome() {
-    const [currencyOpened, setCurrencyOpened] = useState(true)
+    const [currencyOpened, setCurrencyOpened] = useState<boolean>(true)
 
     return (
         <Container fluid p={{ base: 'xs', sm: 'md' }} style={{ marginTop: 20 }}>
@@ -39,6 +39,7 @@ export function AppOneHome() {
                     </div>
                 </Collapse>
             </Paper>
+
             <div style={{ marginTop: 32, overflowX: 'scroll' }}>
                 <StockPortfolio />
             </div>

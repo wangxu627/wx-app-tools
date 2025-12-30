@@ -1,11 +1,12 @@
 import { useState, useEffect, useCallback } from 'react'
 import { 
   Title, Text, Loader, Table, Modal, TextInput, NumberInput, 
-  ActionIcon, Notification, Badge, Group, Button
+  ActionIcon, Notification, Badge, Group, Button, Menu, Textarea
 } from '@mantine/core'
-import { IconEdit, IconTrash, IconPlus, IconRefresh } from '@tabler/icons-react'
+import { IconEdit, IconTrash, IconPlus, IconRefresh, IconDownload, IconUpload, IconClipboard } from '@tabler/icons-react'
 import { stockDb, type StockData } from '../utils/stockDb'
 import { stockPriceService } from '../utils/stockPriceApi'
+import { exportStoreToJSON, importJSONToIndexedDB } from '../utils/indexedDBTools'
 
 interface StockPortfolioProps {
   className?: string
@@ -20,6 +21,10 @@ export default function StockPortfolio({ className }: StockPortfolioProps) {
   const [modalOpened, setModalOpened] = useState(false)
   const [editingStock, setEditingStock] = useState<StockData | null>(null)
   const [notification, setNotification] = useState<string | null>(null)
+  
+  // Export/Import state
+  const [importModalOpened, setImportModalOpened] = useState<boolean>(false)
+  const [jsonInput, setJsonInput] = useState<string>('')
 
   // Form state
   const [form, setForm] = useState({
@@ -102,6 +107,33 @@ export default function StockPortfolio({ className }: StockPortfolioProps) {
 
     return () => clearInterval(interval)
   }, [stockData.length > 0 ? stockData.map(s => s.stock_code).join(',') : ''])
+
+  // Export/Import functions
+  const handleExport = async (): Promise<void> => {
+    try {
+      const data = await exportStoreToJSON('StockPortfolioDB', 'stocks')
+      const jsonString = JSON.stringify(data, null, 2)
+      await navigator.clipboard.writeText(jsonString)
+      setNotification('股票数据已复制到剪贴板！')
+    } catch (error) {
+      console.error('导出失败:', error)
+      setNotification('导出失败，请检查控制台')
+    }
+  }
+
+  const handleImport = async (): Promise<void> => {
+    try {
+      const jsonArray = JSON.parse(jsonInput)
+      await importJSONToIndexedDB('StockPortfolioDB', 'stocks', jsonArray)
+      setImportModalOpened(false)
+      setJsonInput('')
+      setNotification('导入成功！页面将刷新以显示最新数据。')
+      window.location.reload()
+    } catch (error) {
+      console.error('导入失败:', error)
+      setNotification('导入失败，请检查JSON格式是否正确')
+    }
+  }
 
   const handleAddStock = () => {
     setEditingStock(null)
@@ -189,6 +221,35 @@ export default function StockPortfolio({ className }: StockPortfolioProps) {
           >
             Update Prices
           </Button>
+          
+          {/* 添加导出/导入按钮组 */}
+          <Menu shadow="md" width={200}>
+            <Menu.Target>
+              <Button 
+                variant="light" 
+                leftSection={<IconDownload size={16} />}
+                rightSection={<IconUpload size={16} />}
+              >
+                Export/Import
+              </Button>
+            </Menu.Target>
+
+            <Menu.Dropdown>
+              <Menu.Item 
+                leftSection={<IconClipboard size={14} />}
+                onClick={handleExport}
+              >
+                Export to Clipboard
+              </Menu.Item>
+              <Menu.Item 
+                leftSection={<IconUpload size={14} />}
+                onClick={() => setImportModalOpened(true)}
+              >
+                Import from JSON
+              </Menu.Item>
+            </Menu.Dropdown>
+          </Menu>
+          
           <Button leftSection={<IconPlus size={16} />} onClick={handleAddStock}>
             Add Stock
           </Button>
@@ -313,6 +374,38 @@ export default function StockPortfolio({ className }: StockPortfolioProps) {
           />
           <Button onClick={handleSubmit} fullWidth>
             {editingStock ? "更新" : "添加"}
+          </Button>
+        </div>
+      </Modal>
+
+      {/* 导入JSON对话框 */}
+      <Modal 
+        opened={importModalOpened} 
+        onClose={() => {
+          setImportModalOpened(false)
+          setJsonInput('')
+        }}
+        title="Import Stock Data"
+        size="lg"
+      >
+        <Textarea
+          placeholder="Paste JSON data here..."
+          value={jsonInput}
+          onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => setJsonInput(e.currentTarget.value)}
+          autosize
+          minRows={10}
+          maxRows={20}
+          style={{ marginBottom: 20 }}
+        />
+        <div style={{ display: 'flex', justifyContent: 'flex-end', gap: 8 }}>
+          <Button variant="outline" onClick={() => {
+            setImportModalOpened(false)
+            setJsonInput('')
+          }}>
+            Cancel
+          </Button>
+          <Button onClick={handleImport} disabled={!jsonInput.trim()}>
+            Import
           </Button>
         </div>
       </Modal>
